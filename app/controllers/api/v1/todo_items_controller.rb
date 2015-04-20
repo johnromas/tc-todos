@@ -1,16 +1,18 @@
 class Api::V1::TodoItemsController < Api::BaseController
+  before_filter :set_user
+
   def index
-    @todo_items = TodoItem.all
+    @todo_items = current_user.todo_items
     render json: @todo_items
   end
 
   def show
-    @todo_item = TodoItem.find(params[:id])
+    @todo_item = current_user.todo_items.find(params[:id])
     render json: @todo_item
   end
 
   def update
-    @todo_item = TodoItem.find(params[:id])
+    @todo_item = current_user.todo_items.find(params[:id])
 
     if @todo_item.update(todo_params)
       render json: @todo_item, status: :no_content
@@ -20,7 +22,7 @@ class Api::V1::TodoItemsController < Api::BaseController
   end
 
   def create
-    @todo_item = TodoItem.new(todo_params)
+    @todo_item = current_user.todo_items.new(todo_params)
 
     if @todo_item.save
       render json: @todo_item, status: :created
